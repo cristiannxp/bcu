@@ -514,22 +514,17 @@ void ft_list_devices(char location_str[][MAX_LOCATION_ID_LENGTH], int *board_num
 		memset(serial, 0, sizeof(serial));
 		memset(product, 0, sizeof(product));
 
-		// Read EEPROM product description
+		// Read USB string descriptors without claiming the device or detaching the kernel driver.
 		struct ftdi_context* temp_ftdi = ftdi_new();
 		if (temp_ftdi) {
-			if (ftdi_set_interface(temp_ftdi, INTERFACE_B) == 0)
+			int ret = ftdi_usb_get_strings(temp_ftdi, curdev->dev,
+				NULL, 0,
+				product, sizeof(product) - 1,
+				serial, sizeof(serial) - 1);
+			if (ret < 0)
 			{
-				if (ftdi_usb_open_dev(temp_ftdi, curdev->dev) == 0)
-				{
-					if (ftdi_read_eeprom(temp_ftdi) == 0)
-					{
-						if (ftdi_eeprom_decode(temp_ftdi, 0) == 0)
-						{
-							ftdi_eeprom_get_strings(temp_ftdi, NULL, 0, product, sizeof(product) - 1, serial, sizeof(serial) - 1);
-						}
-					}
-					ftdi_usb_close(temp_ftdi);
-				}
+				serial[0] = '\0';
+				product[0] = '\0';
 			}
 			ftdi_free(temp_ftdi);
 		}
