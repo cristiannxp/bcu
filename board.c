@@ -2728,7 +2728,8 @@ struct boot_mode val_board_13_boot_modes[] = {
 	{"emmc", 0x00},
 	{"sd", 0x00},
 	{"serial", 0x00},
-	
+};
+
 // Rails are grouped per SoC power domain, taken from the power management block diagram
 // of the S32N79 reference manual (chip_top power chapter). That diagram names its supplies
 // VDD_MAIN, VDD_SW, VDD_SW_APS and VDD_AO, which are exactly the SoC ball names used here,
